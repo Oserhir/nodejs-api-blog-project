@@ -3,10 +3,10 @@ const mongoose = require("mongoose");
 const MONGODB = process.env.MONGODB_URL;
 mongoose.set("strictQuery", true);
 
-const Db = mongoose
+mongoose
   .connect(MONGODB)
-  .then((connect) => {
-    console.log("connect to Database");
+  .then(() => {
+    console.log("Connect to MongooDB....");
   })
   .catch((err) => {
     console.log(err);
