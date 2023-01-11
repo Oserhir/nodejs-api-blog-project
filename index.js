@@ -7,6 +7,20 @@ require("dotenv").config();
 // connect to database
 require("./config/database");
 
+// Routes
+const userRouters = require("./routes/User");
+const authRouters = require("./routes/Auth");
+const categoryRouters = require("./routes/Category");
+const postRouters = require("./routes/Post");
+const tagRouters = require("./routes/Tags");
+
+// Routes Middlware
+app.use("/api/users", userRouters);
+app.use("/api/auth", authRouters);
+app.use("/api/categories", categoryRouters);
+app.use("/api/posts", postRouters);
+app.use("/api/tags", tagRouters);
+
 // Listen To Server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
