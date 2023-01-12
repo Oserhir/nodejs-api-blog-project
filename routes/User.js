@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+
 const {
   createUser,
   updateUser,
@@ -9,10 +10,11 @@ const {
 } = require("./../controllers/userCtr");
 
 const { createUserValidator } = require("../utils/validators/userValidator");
+const { requireSignIn } = require("../middlwares/authMiddlwares");
 
 // @Desc Create a User
 // @access Private/Admin
-router.post("/", createUserValidator, createUser);
+router.post("/", requireSignIn , createUserValidator, createUser);
 
 // @desc Update User
 router.put("/:id", updateUser);
