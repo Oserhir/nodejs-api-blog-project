@@ -8,8 +8,11 @@ const {
   deleteUser,
 } = require("./../controllers/userCtr");
 
-// @desc Create a User
-router.post("/", createUser);
+const { createUserValidator } = require("../utils/validators/userValidator");
+
+// @Desc Create a User
+// @access Private/Admin
+router.post("/", createUserValidator, createUser);
 
 // @desc Update User
 router.put("/:id", updateUser);

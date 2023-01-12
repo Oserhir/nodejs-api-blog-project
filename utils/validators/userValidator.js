@@ -1,9 +1,8 @@
 const { body, validationResult } = require("express-validator");
-const User = require("../../model/User");
 const validatorResult = require("../../middlwares/validatorMiddlwares");
-const bcrypt = require("bcrypt");
+const User = require("../../model/User");
 
-exports.signupValidator = [
+exports.createUserValidator = [
   body("firstname")
     .notEmpty()
     .withMessage("firstname is not allowed to be empty")
@@ -32,7 +31,7 @@ exports.signupValidator = [
     .isEmail()
     .withMessage("Email must be a valid email")
     .custom(async (email, { req }) => {
-      // Check if Email Exist
+      // Check if The Email Exist
       const user = await User.findOne({ email: email });
 
       if (user) {
@@ -44,18 +43,19 @@ exports.signupValidator = [
     .withMessage("password is not allowed to be empty")
     .isLength({ min: 5 })
     .withMessage("password length must be at least 5 characters long"),
-  validatorResult,
-];
+  body("role")
+    .optional()
+    .custom((role, { req }) => {
+      const roles = ["User", "Admin", "Editor"];
 
-exports.loginValidator = [
-  body("email")
-    .notEmpty()
-    .withMessage("Email is not allowed to be empty")
-    .isEmail()
-    .withMessage("Email must be a valid email"),
+      if (!roles.includes(role)) {
+        throw new Error(
+          `User validation failed: role: ${role} is not a valid enum value for path`
+        );
+      }
 
-  body("password")
-    .notEmpty()
-    .withMessage("password is not allowed to be empty"),
+      return true;
+    }),
+
   validatorResult,
 ];

@@ -1,8 +1,7 @@
 const User = require("../model/User");
 const asyncHandler = require("express-async-handler");
 const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
-require("dotenv").config();
+const { createToken } = require("../utils/generateToken");
 
 // @desc Sign Up
 exports.signup = asyncHandler(async (req, res) => {
@@ -17,7 +16,7 @@ exports.signup = asyncHandler(async (req, res) => {
   });
 
   if (user) {
-    res.status(201).json({ status: "Success!", data: user });
+    res.status(201).json({ token: createToken(user._id), data: user });
   }
 });
 
@@ -31,7 +30,7 @@ exports.login = asyncHandler(async (req, res) => {
     res.status(401).json({ Error: "Invalid Password or Email" });
   }
   // 4) Create Token
-  const token = jwt.sign(user.id, process.env.JWT_SECRET);
+  const token = createToken(user._id);
 
   // 5) Delete password from response
   delete user._doc.password;

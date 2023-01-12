@@ -1,10 +1,10 @@
 const express = require("express");
 const app = express();
 
-// access environment variables
+// Access environment variables
 require("dotenv").config();
 
-// connect to database
+// Connect to database
 require("./config/database");
 
 // Middleware
