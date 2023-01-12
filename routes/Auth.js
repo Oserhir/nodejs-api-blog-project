@@ -2,11 +2,15 @@ const express = require("express");
 const router = express.Router();
 
 const { signup, login } = require("./../controllers/AuthCtr");
+const {
+  signupValidator,
+  loginValidator,
+} = require("./../utils/validators/authValidator");
 
-// Sign Up
-router.post("/signup", signup);
+// @Desc Sign Up
+router.post("/signup", signupValidator, signup);
 
-// Login
-router.post("/login", login);
+// @Desc Login
+router.get("/login", loginValidator, login);
 
 module.exports = router;

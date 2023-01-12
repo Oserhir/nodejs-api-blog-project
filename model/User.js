@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
 
-// Create SCHEMA
+// Create Schema
 const UserSchema = new mongoose.Schema(
   {
     firstname: {
@@ -81,6 +82,13 @@ const UserSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+// Hash Password
+UserSchema.pre("save", async function (next) {
+  const salt = await bcrypt.genSalt();
+  this.password = await bcrypt.hash(this.password, salt);
+  next();
+});
+
 // Create Model
-const User = mongoose.model("User", UserModel);
+const User = mongoose.model("User", UserSchema);
 module.exports = User;

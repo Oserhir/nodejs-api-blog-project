@@ -7,6 +7,9 @@ require("dotenv").config();
 // connect to database
 require("./config/database");
 
+// Middleware
+app.use(express.json()); // pass income payload
+
 // Routes
 const userRouters = require("./routes/User");
 const authRouters = require("./routes/Auth");
