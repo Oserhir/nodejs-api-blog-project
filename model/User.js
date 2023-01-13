@@ -41,7 +41,7 @@ const UserSchema = new mongoose.Schema(
       default: "user",
     },
 
-    viewdBy: [
+    viewers: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
@@ -62,17 +62,31 @@ const UserSchema = new mongoose.Schema(
       },
     ],
 
-    active: {
-      type: Boolean,
-      default: true,
-    },
-
     posts: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Post",
       },
     ],
+
+    blocked: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+
+    plan: {
+      type: String,
+      enum: ["Free", "Premium", "Pro"],
+      default: "Free",
+    },
+
+    userAward: {
+      type: String,
+      enum: ["Bronze", "Silver", "Gold"],
+      default: "Bronze",
+    },
   },
   { timestamps: true }
 );
