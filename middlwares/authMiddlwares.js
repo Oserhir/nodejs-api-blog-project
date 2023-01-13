@@ -50,3 +50,16 @@ exports.requireSignIn = asyncHandler(async (req, res, next) => {
     next();
   }
 });
+
+// Admin ["ad" , "user"]
+exports.alowedTo =
+  (...roles) =>
+  (req, res, next) => {
+    // 1) access roles
+    // 2) access registered user (req.user.role)
+
+    if (!roles.includes(req.user.role)) {
+      res.status(403).json({ err: "You are not allowed to access this route" });
+    }
+    next();
+  };
