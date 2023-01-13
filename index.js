@@ -1,6 +1,10 @@
 const express = require("express");
 const app = express();
 
+//
+const apiError = require("./utils/apiError");
+const { globalErrHandler } = require("./utils/globalErrHandler");
+
 // Access environment variables
 require("dotenv").config();
 
@@ -23,6 +27,17 @@ app.use("/api/auth", authRouters);
 app.use("/api/categories", categoryRouters);
 app.use("/api/posts", postRouters);
 app.use("/api/tags", tagRouters);
+
+// 404 Error
+app.all("*", (req, res, next) => {
+  // create error
+  const err = new apiError(`Can't find this route ${req.originalUrl}`, 400);
+  // send it to Global errors handling middlware
+  next(err);
+});
+
+// Global Error Handlers Middleware
+app.use(globalErrHandler);
 
 // Listen To Server
 const PORT = process.env.PORT || 3000;

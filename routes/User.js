@@ -13,6 +13,8 @@ const {
   createUserValidator,
   updateUserValidator,
   deleteUserValidator,
+  getUserValidator,
+  getAllUserValidator,
 } = require("../utils/validators/userValidator");
 const { requireSignIn, alowedTo } = require("../middlwares/authMiddlwares");
 
@@ -26,7 +28,7 @@ router.post(
   createUser
 );
 
-// @desc Update User
+// @desc Update a User
 // @access Private/Admin
 router.put(
   "/:id",
@@ -37,12 +39,19 @@ router.put(
 );
 
 // @desc Delete a User
-router.delete("/:id", deleteUserValidator, deleteUser);
+// @access Private/Admin
+router.delete(
+  "/:id",
+  requireSignIn,
+  alowedTo("admin"),
+  deleteUserValidator,
+  deleteUser
+);
 
 // @desc get all User
 router.get("/", allUsers);
 
 // @desc get a single User
-router.get("/:id", getUser);
+router.get("/:id", getUserValidator, getUser);
 
 module.exports = router;

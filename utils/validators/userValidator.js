@@ -1,6 +1,9 @@
 const { body, validationResult } = require("express-validator");
 const validatorResult = require("../../middlwares/validatorMiddlwares");
 const User = require("../../model/User");
+const apiError = require("../apiError");
+
+const isValidObjectId = require("../validMongodbObjectid");
 
 exports.createUserValidator = [
   body("firstname")
@@ -116,7 +119,34 @@ exports.updateUserValidator = [
 ];
 
 exports.deleteUserValidator = [
-  // body("id").isMongoId().withMessage("Invalid user id format"),
+  body("id").custom((value, { req }) => {
+    if (!isValidObjectId(req.params.id)) {
+      throw new Error(`Invalid User id format`);
+    }
+    return true;
+  }),
+
+  validatorResult,
+];
+
+exports.getUserValidator = [
+  body("id").custom((value, { req }) => {
+    if (!isValidObjectId(req.params.id)) {
+      throw new Error(`Invalid User id format`);
+    }
+    return true;
+  }),
+
+  validatorResult,
+];
+
+exports.getAllUserValidator = [
+  body("id").custom((value, { req }) => {
+    if (!isValidObjectId(req.params.id)) {
+      throw new Error(`Invalid User id format`);
+    }
+    return true;
+  }),
 
   validatorResult,
 ];

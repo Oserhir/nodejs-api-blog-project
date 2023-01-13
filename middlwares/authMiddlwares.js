@@ -2,8 +2,9 @@ const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const User = require("../model/User");
 const asyncHandler = require("express-async-handler");
+const apiError = require("../utils/apiError");
 
-// @desc Make sure the user is logged in
+// @Desc Make sure the user is logged in
 exports.requireSignIn = asyncHandler(async (req, res, next) => {
   // 1) Get token from header
   let token;
@@ -16,7 +17,10 @@ exports.requireSignIn = asyncHandler(async (req, res, next) => {
 
   if (!token) {
     return next(
-      new Error("You are not login, Please login to get access this route")
+      new apiError(
+        "You are not login, Please login to get access this route",
+        401
+      )
     );
   }
 
@@ -27,7 +31,7 @@ exports.requireSignIn = asyncHandler(async (req, res, next) => {
     function (err, decoded) {
       if (err) {
         if (err.name === "JsonWebTokenError") {
-          next(new Error(err.message));
+          next(new apiError(err.message));
         }
       } else {
         return decoded;
@@ -40,7 +44,10 @@ exports.requireSignIn = asyncHandler(async (req, res, next) => {
     const user = await User.findById(decoded.id);
     if (!user) {
       return next(
-        new Error("The user that belong to this token does no longer exist")
+        new apiError(
+          "The user that belong to this token does no longer exist",
+          401
+        )
       );
     }
 
@@ -51,7 +58,6 @@ exports.requireSignIn = asyncHandler(async (req, res, next) => {
   }
 });
 
-// Admin ["ad" , "user"]
 exports.alowedTo =
   (...roles) =>
   (req, res, next) => {
@@ -59,7 +65,9 @@ exports.alowedTo =
     // 2) access registered user (req.user.role)
 
     if (!roles.includes(req.user.role)) {
-      res.status(403).json({ err: "You are not allowed to access this route" });
+      return next(
+        new apiError("You are not allowed to access this route", 403)
+      );
     }
     next();
   };

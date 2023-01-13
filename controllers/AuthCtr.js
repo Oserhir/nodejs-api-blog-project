@@ -2,6 +2,7 @@ const User = require("../model/User");
 const asyncHandler = require("express-async-handler");
 const bcrypt = require("bcrypt");
 const { createToken } = require("../utils/generateToken");
+const apiError = require("../utils/apiError");
 
 // @desc Sign Up
 exports.signup = asyncHandler(async (req, res) => {
@@ -21,13 +22,13 @@ exports.signup = asyncHandler(async (req, res) => {
 });
 
 // @desc Login
-exports.login = asyncHandler(async (req, res) => {
+exports.login = asyncHandler(async (req, res, next) => {
   // 1) check if password and email in the body (validation)
   // 2) check if user exist & check if password is correct
   const user = await User.findOne({ email: req.body.email });
 
   if (!user || !(await bcrypt.compare(req.body.password, user.password))) {
-    res.status(401).json({ Error: "Invalid Password or Email" });
+    return next(new apiError("Invalid Password or Email", 401));
   }
   // 4) Create Token
   const token = createToken(user._id);

@@ -2,6 +2,7 @@ const { body, validationResult } = require("express-validator");
 const User = require("../../model/User");
 const validatorResult = require("../../middlwares/validatorMiddlwares");
 const bcrypt = require("bcrypt");
+const apiError = require("./../apiError");
 
 exports.signupValidator = [
   body("firstname")
@@ -36,7 +37,7 @@ exports.signupValidator = [
       const user = await User.findOne({ email: email });
 
       if (user) {
-        throw new Error("User Already Exists");
+        return Promise.reject(new Error("E-mail already in use"));
       }
     }),
   body("password")
