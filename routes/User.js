@@ -12,6 +12,7 @@ const {
   whoViewMyProfile,
   following,
   Unfollowing,
+  block,
 } = require("./../controllers/userCtr");
 
 const {
@@ -96,6 +97,15 @@ router.get(
   alowedTo("user", "admin"),
   followValidator,
   Unfollowing
+);
+
+// @desc Block
+router.get(
+  "/block/:id",
+  requireSignIn,
+  alowedTo("user", "admin"),
+  followValidator,
+  block
 );
 
 module.exports = router;

@@ -156,6 +156,39 @@ exports.Unfollowing = asyncHandler(async (req, res, next) => {
       });
     }
   } else {
-    return next(new apiError("User that you trying to follow not found!", 403));
+    return next(
+      new apiError("User that you trying to follow sas not found!", 403)
+    );
+  }
+});
+
+exports.block = asyncHandler(async (req, res, next) => {
+  const user = await User.findById(req.user._id);
+  const userToBeBlocked = await User.findById(req.params.id);
+
+  // Check if userToBeBlocked and user are found
+  if (user && userToBeBlocked) {
+    // Check if userWhoUnfollowed is already in the user's blocked array
+    const isUserAlreadyBlocked = user.blocked.find(
+      (user) => user.toString() === userToBeBlocked._id.toString()
+    );
+
+    if (isUserAlreadyBlocked) {
+      return next(new apiError("You already blocked this user", 403));
+    }
+    // Add userToBleBlocked to the user blocked arr
+    await User.findByIdAndUpdate(
+      req.user._id,
+      { $addToSet: { blocked: userToBeBlocked._id } },
+      { new: true }
+    );
+
+    res.status(200).json({
+      message: "You have successfully blocked this user",
+    });
+  } else {
+    return next(
+      new apiError("User that you trying to block was not found!", 403)
+    );
   }
 });
