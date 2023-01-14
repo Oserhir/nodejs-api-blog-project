@@ -11,6 +11,7 @@ const {
   uploadProfileImage,
   whoViewMyProfile,
   following,
+  Unfollowing,
 } = require("./../controllers/userCtr");
 
 const {
@@ -86,6 +87,15 @@ router.get(
   alowedTo("user", "admin"),
   followValidator,
   following
+);
+
+// @desc unfollow
+router.get(
+  "/unfollow/:id",
+  requireSignIn,
+  alowedTo("user", "admin"),
+  followValidator,
+  Unfollowing
 );
 
 module.exports = router;

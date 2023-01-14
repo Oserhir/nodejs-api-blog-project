@@ -88,8 +88,6 @@ exports.following = asyncHandler(async (req, res, next) => {
       (follower) => follower.toString() === B._id.toString()
     );
 
-    console.log(isUserAlreadyFollowed);
-
     if (isUserAlreadyFollowed) {
       return next(new apiError("You already followed this user"));
     } else {
@@ -112,6 +110,49 @@ exports.following = asyncHandler(async (req, res, next) => {
       res.json({
         status: "success",
         data: "You have successfully follow this user",
+      });
+    }
+  } else {
+    return next(new apiError("User that you trying to follow not found!", 403));
+  }
+});
+
+// @Desc Unfollowing
+exports.Unfollowing = asyncHandler(async (req, res, next) => {
+  const A = await User.findById(req.user._id);
+
+  // Find the user to Unfollow
+  const B = await User.findById(req.params.id);
+
+  // Check if user and userWhoFollowed are found
+  if (A && B) {
+    // Check if A is already follow B
+    const isUserAlreadyFollowed = A.following.find(
+      (follower) => follower.toString() === B._id.toString()
+    );
+
+    if (!isUserAlreadyFollowed) {
+      return next(new apiError("You have not followed this user"));
+    } else {
+      //   remove userToFollow to the userWhoFollowed's following array
+      await User.findByIdAndUpdate(
+        req.user._id,
+        {
+          $pull: { following: B._id },
+        },
+        { new: true }
+      );
+      // remove userWhoFollowed into the user's followers array
+      await User.findByIdAndUpdate(
+        req.params.id,
+        {
+          $pull: { followers: A._id },
+        },
+        { new: true }
+      );
+      res.json({
+        status: "success",
+        data: "You have successfully unfollow this user",
       });
     }
   } else {
