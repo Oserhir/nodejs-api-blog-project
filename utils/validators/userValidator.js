@@ -150,3 +150,25 @@ exports.getAllUserValidator = [
 
   validatorResult,
 ];
+
+exports.whoViewMyProfileValidator = [
+  body("id").custom((value, { req }) => {
+    if (!isValidObjectId(req.params.id)) {
+      throw new Error(`Invalid User id format`);
+    }
+    return true;
+  }),
+
+  validatorResult,
+];
+
+exports.followValidator = [
+  body("id").custom((value, { req }) => {
+    if (!isValidObjectId(req.params.id)) {
+      throw new Error(`Invalid User id format`);
+    }
+    return true;
+  }),
+
+  validatorResult,
+];

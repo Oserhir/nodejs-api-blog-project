@@ -9,6 +9,8 @@ const {
   deleteUser,
   profilePhotoUpload,
   uploadProfileImage,
+  whoViewMyProfile,
+  following,
 } = require("./../controllers/userCtr");
 
 const {
@@ -17,6 +19,8 @@ const {
   deleteUserValidator,
   getUserValidator,
   getAllUserValidator,
+  whoViewMyProfileValidator,
+  followValidator,
 } = require("../utils/validators/userValidator");
 const { requireSignIn, alowedTo } = require("../middlwares/authMiddlwares");
 
@@ -56,13 +60,32 @@ router.get("/", allUsers);
 // @desc get a single User
 router.get("/:id", getUserValidator, getUser);
 
-// @desc Uploaded image
+// @desc Uploaded profile image
+// @access Protect
 router.post(
   "/profile-photo-upload",
   requireSignIn,
   alowedTo("user", "admin"),
   uploadProfileImage,
   profilePhotoUpload
+);
+
+// @desc Who view my profile
+router.get(
+  "/profile-viewers/:id",
+  requireSignIn,
+  alowedTo("user", "admin"),
+  whoViewMyProfileValidator,
+  whoViewMyProfile
+);
+
+// @desc Follow
+router.get(
+  "/following/:id",
+  requireSignIn,
+  alowedTo("user", "admin"),
+  followValidator,
+  following
 );
 
 module.exports = router;
