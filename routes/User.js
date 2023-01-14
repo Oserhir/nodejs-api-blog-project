@@ -7,6 +7,8 @@ const {
   allUsers,
   getUser,
   deleteUser,
+  profilePhotoUpload,
+  uploadProfileImage,
 } = require("./../controllers/userCtr");
 
 const {
@@ -53,5 +55,14 @@ router.get("/", allUsers);
 
 // @desc get a single User
 router.get("/:id", getUserValidator, getUser);
+
+// @desc Uploaded image
+router.post(
+  "/profile-photo-upload",
+  requireSignIn,
+  alowedTo("user", "admin"),
+  uploadProfileImage,
+  profilePhotoUpload
+);
 
 module.exports = router;
