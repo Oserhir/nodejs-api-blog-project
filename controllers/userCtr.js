@@ -192,3 +192,46 @@ exports.block = asyncHandler(async (req, res, next) => {
     );
   }
 });
+
+exports.unblock = asyncHandler(async (req, res, next) => {
+  const user = await User.findById(req.user._id);
+  const userToBeunBlock = await User.findById(req.params.id);
+  // Check if userToBeunBlock and user are found
+  if (user && userToBeunBlock) {
+    const isUserAlreadyBlocked = user.blocked.find(
+      (user) => user.toString() === userToBeunBlock._id.toString()
+    );
+    if (!isUserAlreadyBlocked) {
+      return next(new apiError("You have not blocked this user", 403));
+    }
+    // Remove userToBeunBlock from the main user
+    await User.findByIdAndUpdate(
+      req.user._id,
+      { $pull: { blocked: userToBeunBlock._id } },
+      { new: true }
+    );
+    res.status(200).json({
+      message: "You have successfully unblocked this user",
+    });
+  } else {
+    return next(
+      new apiError("User that you trying to unblock was not found!", 403)
+    );
+  }
+});
+
+exports.block_admin = asyncHandler(async (req, res, next) => {
+  const user = await User.findByIdAndUpdate(
+    req.params.id,
+    { isBlocked: true },
+    { new: true }
+  );
+
+  if (!user) {
+    return next(new apiError(`No user for this id ${req.params.id}`, 404));
+  }
+
+  res
+    .status(200)
+    .json({ message: "You Successfully block this user", data: user });
+});

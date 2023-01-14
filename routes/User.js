@@ -13,6 +13,8 @@ const {
   following,
   Unfollowing,
   block,
+  unblock,
+  block_admin,
 } = require("./../controllers/userCtr");
 
 const {
@@ -67,45 +69,69 @@ router.get("/:id", getUserValidator, getUser);
 router.post(
   "/profile-photo-upload",
   requireSignIn,
-  alowedTo("user", "admin"),
+  alowedTo("user"),
   uploadProfileImage,
   profilePhotoUpload
 );
 
 // @desc Who view my profile
+// @access Protect
 router.get(
   "/profile-viewers/:id",
   requireSignIn,
-  alowedTo("user", "admin"),
+  alowedTo("user"),
   whoViewMyProfileValidator,
   whoViewMyProfile
 );
 
 // @desc Follow
+// @access Protect
 router.get(
   "/following/:id",
   requireSignIn,
-  alowedTo("user", "admin"),
+  alowedTo("user"),
   followValidator,
   following
 );
 
 // @desc unfollow
+// @access Protect
 router.get(
   "/unfollow/:id",
   requireSignIn,
-  alowedTo("user", "admin"),
+  alowedTo("user"),
   followValidator,
   Unfollowing
 );
 
 // @desc Block
+// @access Protect
 router.get(
   "/block/:id",
   requireSignIn,
-  alowedTo("user", "admin"),
+  alowedTo("user"),
   followValidator,
   block
+);
+
+// @desc unblocking
+// @access Protect
+router.get(
+  "/unblock/:id",
+  requireSignIn,
+  alowedTo("user"),
+  followValidator,
+  unblock
+);
+
+// @desc block
+// @access Admin
+router.get(
+  "/admin-block/:id",
+  requireSignIn,
+  alowedTo("admin"),
+  followValidator,
+  block_admin
 );
 
 module.exports = router;
