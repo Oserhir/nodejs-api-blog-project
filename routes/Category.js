@@ -2,6 +2,10 @@ const express = require("express");
 const router = express.Router();
 
 const {
+  createCategoryValidator,
+} = require("./../utils/validators/categoryValidator");
+
+const {
   createCategory,
   updateCategory,
   allCategories,
@@ -9,8 +13,16 @@ const {
   deleteCategory,
 } = require("./../controllers/categoryCtr");
 
+const { requireSignIn, alowedTo } = require("../middlwares/authMiddlwares");
+
 // @desc Create Category
-router.post("/", createCategory);
+router.post(
+  "/",
+  requireSignIn,
+  alowedTo("admin"),
+  createCategoryValidator,
+  createCategory
+);
 
 // @desc Update Category
 router.put("/:id", updateCategory);

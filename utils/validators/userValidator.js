@@ -2,7 +2,6 @@ const { body, validationResult } = require("express-validator");
 const validatorResult = require("../../middlwares/validatorMiddlwares");
 const User = require("../../model/User");
 const apiError = require("../apiError");
-
 const isValidObjectId = require("../validMongodbObjectid");
 
 exports.createUserValidator = [

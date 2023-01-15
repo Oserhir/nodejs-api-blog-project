@@ -27,6 +27,7 @@ const {
   whoViewMyProfileValidator,
   followValidator,
 } = require("../utils/validators/userValidator");
+
 const { requireSignIn, alowedTo } = require("../middlwares/authMiddlwares");
 
 // @Desc Create a User
