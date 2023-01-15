@@ -11,7 +11,10 @@ const {
 
 const { requireSignIn, alowedTo } = require("../middlwares/authMiddlwares");
 
-const { createPostValidator } = require("../utils/validators/postValidator");
+const {
+  createPostValidator,
+  removePostValidator,
+} = require("../utils/validators/postValidator");
 
 // @Desc Create Post
 // @Access Private
@@ -33,6 +36,12 @@ router.get("/", allPosts);
 router.get("/:id", getPost);
 
 // @desc Delete a Post
-router.delete("/:id", deletePost);
+router.delete(
+  "/:id",
+  requireSignIn,
+  alowedTo("admin"),
+  removePostValidator,
+  deletePost
+);
 
 module.exports = router;

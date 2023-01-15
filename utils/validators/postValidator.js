@@ -1,5 +1,6 @@
 const { body, validationResult } = require("express-validator");
 const validatorResult = require("../../middlwares/validatorMiddlwares");
+const isValidObjectId = require("../validMongodbObjectid");
 
 exports.createPostValidator = [
   body("title")
@@ -18,6 +19,17 @@ exports.createPostValidator = [
     .withMessage(
       "title length must be less than or equal to 600 characters long"
     ),
+
+  validatorResult,
+];
+
+exports.removePostValidator = [
+  body("id").custom((value, { req }) => {
+    if (!isValidObjectId(req.params.id)) {
+      throw new Error(`Invalid Post id format`);
+    }
+    return true;
+  }),
 
   validatorResult,
 ];
