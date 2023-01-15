@@ -14,6 +14,7 @@ const { requireSignIn, alowedTo } = require("../middlwares/authMiddlwares");
 const {
   createPostValidator,
   removePostValidator,
+  updatePostValidator,
 } = require("../utils/validators/postValidator");
 
 // @Desc Create Post
@@ -27,7 +28,13 @@ router.post(
 );
 
 // @desc Update Post
-router.put("/:id", updatePost);
+router.put(
+  "/:id",
+  requireSignIn,
+  alowedTo("admin"),
+  updatePostValidator,
+  updatePost
+);
 
 // @desc get all Post
 router.get("/", allPosts);

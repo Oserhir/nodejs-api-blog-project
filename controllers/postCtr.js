@@ -21,7 +21,24 @@ exports.createPost = asyncHandler(async (req, res) => {
   res.status(201).send({ data: post });
 });
 
-exports.updatePost = (req, res) => {};
+exports.updatePost = asyncHandler(async (req, res, next) => {
+  const { id } = req.params;
+  const post = await Post.findById(id);
+
+  if (!post) {
+    return next(new apiError(`No Post for this id ${id}`));
+  }
+
+  // Check if The Post Belong To User
+  if (post.author.toString() !== req.user._id.toString()) {
+    return next(new apiError(`You are not allowed to update this post`, 403));
+  }
+
+  const doc = await Post.findOneAndUpdate(post._id, req.body, { new: true });
+
+  res.status(200).json({ data: doc });
+});
+
 exports.allPosts = (req, res) => {};
 exports.getPost = (req, res) => {};
 exports.deletePost = asyncHandler(async (req, res, next) => {

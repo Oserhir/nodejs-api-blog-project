@@ -23,6 +23,34 @@ exports.createPostValidator = [
   validatorResult,
 ];
 
+exports.updatePostValidator = [
+  body("id").custom((value, { req }) => {
+    if (!isValidObjectId(req.params.id)) {
+      throw new Error(`Invalid Post id format`);
+    }
+    return true;
+  }),
+
+  body("title")
+    .optional()
+    .isLength({ max: 20 })
+    .withMessage(
+      "title length must be less than or equal to 20 characters long"
+    )
+    .isLength({ min: 2 })
+    .withMessage("title length must be at least 2 characters long"),
+  body("description")
+    .optional()
+    .isLength({ min: 2 })
+    .withMessage("description length must be at least 2 characters long")
+    .isLength({ max: 600 })
+    .withMessage(
+      "description length must be less than or equal to 600 characters long"
+    ),
+
+  validatorResult,
+];
+
 exports.removePostValidator = [
   body("id").custom((value, { req }) => {
     if (!isValidObjectId(req.params.id)) {
