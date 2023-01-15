@@ -3,6 +3,9 @@ const router = express.Router();
 
 const {
   createCategoryValidator,
+  deleteCategoryValidator,
+  updateCategoryValidator,
+  getCategoryValidator,
 } = require("./../utils/validators/categoryValidator");
 
 const {
@@ -25,15 +28,27 @@ router.post(
 );
 
 // @desc Update Category
-router.put("/:id", updateCategory);
+router.put(
+  "/:id",
+  requireSignIn,
+  alowedTo("admin"),
+  updateCategoryValidator,
+  updateCategory
+);
 
 // @desc get all Category
 router.get("/", allCategories);
 
 // @desc get a single Category
-router.get("/:id", getCategory);
+router.get("/:id", getCategoryValidator, getCategory);
 
 // @desc Delete a Category
-router.delete("/:id", deleteCategory);
+router.delete(
+  "/:id",
+  requireSignIn,
+  alowedTo("admin"),
+  deleteCategoryValidator,
+  deleteCategory
+);
 
 module.exports = router;
