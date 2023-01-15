@@ -9,8 +9,19 @@ const {
   deletePost,
 } = require("../controllers/postCtr");
 
-// @desc Create Post
-router.post("/", createPost);
+const { requireSignIn, alowedTo } = require("../middlwares/authMiddlwares");
+
+const { createPostValidator } = require("../utils/validators/postValidator");
+
+// @Desc Create Post
+// @Access Private
+router.post(
+  "/",
+  requireSignIn,
+  alowedTo("admin"),
+  createPostValidator,
+  createPost
+);
 
 // @desc Update Post
 router.put("/:id", updatePost);
