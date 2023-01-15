@@ -92,8 +92,17 @@ const UserSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+// Get Full Name
 UserSchema.virtual("fullname").get(function () {
   return `${this.firstname} ${this.lastname}`;
+});
+// Get intials
+UserSchema.virtual("intials").get(function () {
+  return `${this.firstname[0]}${this.lastname[0]}`;
+});
+// Get post counts
+UserSchema.virtual("postCounts").get(function () {
+  return this.posts.length;
 });
 
 // Hash Password
