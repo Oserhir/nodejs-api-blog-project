@@ -235,3 +235,19 @@ exports.block_admin = asyncHandler(async (req, res, next) => {
     .status(200)
     .json({ message: "You Successfully block this user", data: user });
 });
+
+exports.unblockUser_admin = asyncHandler(async (req, res, next) => {
+  const user = await User.findByIdAndUpdate(
+    req.params.id,
+    { isBlocked: false },
+    { new: true }
+  );
+
+  if (!user) {
+    return next(new apiError(`No user for this id ${req.params.id}`, 404));
+  }
+
+  res
+    .status(200)
+    .json({ message: "You Successfully unblock this user", data: user });
+});

@@ -15,6 +15,7 @@ const {
   block,
   unblock,
   block_admin,
+  unblockUser_admin,
 } = require("./../controllers/userCtr");
 
 const {
@@ -132,6 +133,16 @@ router.get(
   alowedTo("admin"),
   followValidator,
   block_admin
+);
+
+// @desc unblock
+// @access Admin
+router.get(
+  "/admin-unblock/:id",
+  requireSignIn,
+  alowedTo("admin"),
+  followValidator,
+  unblockUser_admin
 );
 
 module.exports = router;

@@ -88,8 +88,13 @@ const UserSchema = new mongoose.Schema(
       default: "Bronze",
     },
   },
+  { toJSON: { virtuals: true } },
   { timestamps: true }
 );
+
+UserSchema.virtual("fullname").get(function () {
+  return `${this.firstname} ${this.lastname}`;
+});
 
 // Hash Password
 UserSchema.pre("save", async function (next) {
