@@ -1,5 +1,8 @@
-exports.createCategory = (req, res) => {};
-exports.updateCategory = (req, res) => {};
-exports.allCategories = (req, res) => {};
-exports.getCategory = (req, res) => {};
-exports.deleteCategory = (req, res) => {};
+const handle = require("./handlersFactory");
+const Category = require("./../model/Category");
+
+exports.createCategory = handle.createOne(Category);
+exports.updateCategory = handle.updateOne(Category, "category");
+exports.allCategories = handle.getAll(Category);
+exports.getCategory = handle.getOne(Category, "category");
+exports.deleteCategory = handle.deleteOne(Category, "category");

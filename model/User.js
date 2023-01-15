@@ -96,13 +96,35 @@ const UserSchema = new mongoose.Schema(
 UserSchema.virtual("fullname").get(function () {
   return `${this.firstname} ${this.lastname}`;
 });
+
 // Get intials
 UserSchema.virtual("intials").get(function () {
   return `${this.firstname[0]}${this.lastname[0]}`;
 });
+
 // Get post counts
 UserSchema.virtual("postCounts").get(function () {
   return this.posts.length;
+});
+
+//get followers count
+UserSchema.virtual("followersCount").get(function () {
+  return this.followers.length;
+});
+
+//get followers count
+UserSchema.virtual("followingCount").get(function () {
+  return this.following.length;
+});
+
+//get viewers count
+UserSchema.virtual("viewersCount").get(function () {
+  return this.viewers.length;
+});
+
+//get blocked count
+UserSchema.virtual("blockedCount").get(function () {
+  return this.blocked.length;
 });
 
 // Hash Password
