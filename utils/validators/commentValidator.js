@@ -2,6 +2,7 @@ const { body, validationResult } = require("express-validator");
 const validatorResult = require("../../middlwares/validatorMiddlwares");
 const isValidObjectId = require("../validMongodbObjectid");
 const Post = require("../../model/Post");
+const Comment = require("../../model/Comment");
 
 exports.createCommentValidator = [
   body("description").notEmpty().withMessage("description is required"),
@@ -24,6 +25,37 @@ exports.createCommentValidator = [
 
       return true;
     }),
+
+  validatorResult,
+];
+
+exports.updateCommentValidator = [
+  body("description").notEmpty().withMessage("description is required"),
+  body("id").custom(async (value, { req }) => {
+    if (!isValidObjectId(req.params.id)) {
+      throw new Error(`Invalid Comment id format`);
+    }
+    // find the comment
+    const comment = await Comment.findById(req.params.id);
+    if (!comment) {
+      return new Error(`No comment for thi id ${req.params.id}`);
+    }
+
+    // Check if the user owner this comment
+    if (req.user._id.toString() !== comment.user.toString()) {
+      throw new Error(`you are not allowed to update this comment`, 403);
+    }
+  }),
+
+  validatorResult,
+];
+
+exports.getCommentValidator = [
+  body("id").custom(async (value, { req }) => {
+    if (!isValidObjectId(req.params.id)) {
+      throw new Error(`Invalid Comment id format`);
+    }
+  }),
 
   validatorResult,
 ];

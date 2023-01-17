@@ -41,7 +41,7 @@ exports.getOne = (Model, name = "document") =>
     res.status(200).json({ data: document });
   });
 
-exports.getAll = (Model, name = "document") =>
+exports.getAll = (Model) =>
   asyncHandler(async (req, res, next) => {
     const document = await Model.find();
 

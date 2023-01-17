@@ -58,6 +58,7 @@ exports.requireSignIn = asyncHandler(async (req, res, next) => {
   }
 });
 
+// @Desc
 exports.alowedTo =
   (...roles) =>
   (req, res, next) => {
@@ -71,3 +72,6 @@ exports.alowedTo =
     }
     next();
   };
+
+// @desc Make sure the user is logged in the same own url
+exports.isAuth = (req, res, next) => {};
