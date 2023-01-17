@@ -5,30 +5,30 @@ const app = express();
 const apiError = require("./utils/apiError");
 const { globalErrHandler } = require("./utils/globalErrHandler");
 
-// Access environment variables
+// access environment variables
 require("dotenv").config();
 
-// Connect to database
+// connect to database
 require("./config/database");
 
-// Middleware
+// middleware
 app.use(express.json()); // pass income payload
 
-// Routes
+// routes
 const userRouters = require("./routes/User");
 const authRouters = require("./routes/Auth");
 const categoryRouters = require("./routes/Category");
 const postRouters = require("./routes/Post");
 const tagRouters = require("./routes/Tags");
 
-// Routes Middlware
+// routes middlware
 app.use("/api/users", userRouters);
 app.use("/api/auth", authRouters);
 app.use("/api/categories", categoryRouters);
 app.use("/api/posts", postRouters);
 app.use("/api/tags", tagRouters);
 
-// 404 Error
+// 404 error
 app.all("*", (req, res, next) => {
   // create error
   const err = new apiError(`Can't find this route ${req.originalUrl}`, 400);

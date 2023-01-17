@@ -15,6 +15,7 @@ const {
   createPostValidator,
   removePostValidator,
   updatePostValidator,
+  getPostValidator,
 } = require("../utils/validators/postValidator");
 
 // @Desc Create Post
@@ -40,7 +41,7 @@ router.put(
 router.get("/", allPosts);
 
 // @desc get a single Post
-router.get("/:id", getPost);
+router.get("/:id", getPostValidator, getPost);
 
 // @desc Delete a Post
 router.delete(

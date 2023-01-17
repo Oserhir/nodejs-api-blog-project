@@ -1,9 +1,10 @@
-const handle = require("./handlersFactory");
 const Post = require("../model/Post");
 const User = require("../model/User");
 const asyncHandler = require("express-async-handler");
 const apiError = require("../utils/apiError");
+const handlers = require("./handlersFactory");
 
+// @desc Create Post
 exports.createPost = asyncHandler(async (req, res) => {
   // Create The Post
   req.body.author = req.user._id;
@@ -21,6 +22,7 @@ exports.createPost = asyncHandler(async (req, res) => {
   res.status(201).send({ data: post });
 });
 
+// @desc Update Post
 exports.updatePost = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
   const post = await Post.findById(id);
@@ -39,8 +41,13 @@ exports.updatePost = asyncHandler(async (req, res, next) => {
   res.status(200).json({ data: doc });
 });
 
-exports.allPosts = (req, res) => {};
-exports.getPost = (req, res) => {};
+// @desc Get List of Posts
+exports.allPosts = handlers.getAll(Post);
+
+// @desc Get a single post
+exports.getPost = handlers.getOne(Post, "post");
+
+// @desc Delete Post
 exports.deletePost = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
 
