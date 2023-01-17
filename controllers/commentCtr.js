@@ -37,3 +37,6 @@ exports.getComment = handler.getOne(Comment, "comment");
 
 // @desc get All Comment
 exports.allComments = handler.getAll(Comment);
+
+// @desc Delete Comment
+exports.deleteComment = handler.deleteOne(Comment, "comment");

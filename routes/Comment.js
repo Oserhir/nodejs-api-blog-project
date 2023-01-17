@@ -6,12 +6,14 @@ const {
   updateComment,
   getComment,
   allComments,
+  deleteComment,
 } = require("../controllers/commentCtr");
 
 const {
   createCommentValidator,
   updateCommentValidator,
   getCommentValidator,
+  deleteCommentValidator,
 } = require("../utils/validators/commentValidator");
 
 const { requireSignIn, alowedTo } = require("../middlwares/authMiddlwares");
@@ -34,6 +36,16 @@ router.put(
   alowedTo("user", "admin"),
   updateCommentValidator,
   updateComment
+);
+
+// @desc delete comment
+// @access protect
+router.delete(
+  "/:id",
+  requireSignIn,
+  alowedTo("user", "admin"),
+  deleteCommentValidator,
+  deleteComment
 );
 
 // @desc get a single comment
