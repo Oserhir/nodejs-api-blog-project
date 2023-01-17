@@ -20,6 +20,7 @@ const authRouters = require("./routes/Auth");
 const categoryRouters = require("./routes/Category");
 const postRouters = require("./routes/Post");
 const tagRouters = require("./routes/Tags");
+const commentRouters = require("./routes/Comment");
 
 // routes middlware
 app.use("/api/users", userRouters);
@@ -27,6 +28,7 @@ app.use("/api/auth", authRouters);
 app.use("/api/categories", categoryRouters);
 app.use("/api/posts", postRouters);
 app.use("/api/tags", tagRouters);
+app.use("/api/comments", commentRouters);
 
 // 404 error
 app.all("*", (req, res, next) => {
