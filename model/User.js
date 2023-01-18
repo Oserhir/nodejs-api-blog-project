@@ -100,27 +100,27 @@ const UserSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// Get Full Name
+// @desc Get Full Name
 UserSchema.virtual("fullname").get(function () {
   return `${this.firstname} ${this.lastname}`;
 });
 
-// Get intials
+// @desc Get intials
 UserSchema.virtual("intials").get(function () {
   return `${this.firstname[0]}${this.lastname[0]}`;
 });
 
-// Get post counts
+// @desc Get post counts
 UserSchema.virtual("postCounts").get(function () {
   return this.posts.length;
 });
 
-//get followers count
+// @desc get followers count
 UserSchema.virtual("followersCount").get(function () {
   return this.followers.length;
 });
 
-//get followers count
+// @desc get followers count
 UserSchema.virtual("followingCount").get(function () {
   return this.following.length;
 });
@@ -130,7 +130,7 @@ UserSchema.virtual("viewersCount").get(function () {
   return this.viewers.length;
 });
 
-//get blocked count
+// @desc get blocked count
 UserSchema.virtual("blockedCount").get(function () {
   return this.blocked.length;
 });
@@ -149,16 +149,47 @@ UserSchema.pre("findOne", async function (next) {
     return lastPostDateStr;
   });
 
+  // --------- Check if the user inactive for 30 days ---------- //
+
+  const currentDate = new Date();
+
+  const diff = (currentDate - lastPostDate) / (1000 * 3600 * 24);
+
+  if (diff > 30) {
+    UserSchema.virtual("isInactive").get(function () {
+      return true;
+    });
+    await User.findByIdAndUpdate(userId, { isBlocked: true }, { new: true });
+  } else {
+    UserSchema.virtual("isInactive").get(function () {
+      return false;
+    });
+    await User.findByIdAndUpdate(userId, { isBlocked: false }, { new: true });
+  }
+
+  // --------- Last Active Date Of A User ---------- //
+
+  const daysAgo = Math.floor(diff);
+  UserSchema.virtual("lastActive").get(function () {
+    if (daysAgo <= 0) {
+      return "today";
+    } else if (daysAgo === 1) {
+      return "yeterday";
+    } else {
+      return `${daysAgo} days ago`;
+    }
+  });
+
   next();
 });
 
-// Hash Password
+// @desc Hash Password
 UserSchema.pre("save", async function (next) {
   const salt = await bcrypt.genSalt();
   this.password = await bcrypt.hash(this.password, salt);
   next();
 });
 
-// Create Model
+// @desc Create Model
 const User = mongoose.model("User", UserSchema);
 module.exports = User;
