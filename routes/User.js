@@ -17,6 +17,7 @@ const {
   block_admin,
   unblockUser_admin,
   changeUserPassword,
+  deleteAccount,
 } = require("./../controllers/userCtr");
 
 const {
@@ -60,6 +61,15 @@ router.put(
   alowedTo("admin"),
   updateUserValidator,
   updateUser
+);
+
+// @desc permanantly delete an account
+// @access Protect
+router.delete(
+  "/delete-account",
+  requireSignIn,
+  alowedTo("user", "admin"),
+  deleteAccount
 );
 
 // @desc Delete a User

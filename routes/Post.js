@@ -27,7 +27,7 @@ const {
 router.post(
   "/",
   requireSignIn,
-  alowedTo("admin"),
+  alowedTo("admin", "user"),
   isBlocked,
   createPostValidator,
   createPost
@@ -37,7 +37,7 @@ router.post(
 router.put(
   "/:id",
   requireSignIn,
-  alowedTo("admin"),
+  alowedTo("admin", "user"),
   updatePostValidator,
   updatePost
 );
@@ -52,7 +52,7 @@ router.get("/:id", getPostValidator, getPost);
 router.delete(
   "/:id",
   requireSignIn,
-  alowedTo("admin"),
+  alowedTo("admin", "user"),
   removePostValidator,
   deletePost
 );

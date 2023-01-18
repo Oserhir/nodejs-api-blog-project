@@ -1,4 +1,8 @@
 const User = require("../model/User");
+const Post = require("../model/Post");
+const Comment = require("../model/Comment");
+const Category = require("../model/Category");
+
 const handlers = require("./handlersFactory");
 const asyncHandler = require("express-async-handler");
 const bcrypt = require("bcrypt");
@@ -51,6 +55,27 @@ exports.getUser = handlers.getOne(User, "user");
 
 // @Desc Delete a User
 exports.deleteUser = handlers.deleteOne(User, "user");
+
+// @Desc Permanantly Delete User Account
+exports.deleteAccount = asyncHandler(async (req, res, next) => {
+  const userId = req.user._id;
+
+  // Delete User
+  const user = await User.findById(userId);
+  // Delete All the Post
+  const posts = await Post.deleteMany({ author: userId });
+
+  // Delete All Comment
+  const comment = await Comment.deleteMany({ user: userId });
+
+  // Delete All Category
+  const category = await Category.deleteMany({ user: userId });
+
+  user.delete();
+
+  // Send Response to the Client
+  res.status(204).send();
+});
 
 // @Desc Uploaded image
 exports.profilePhotoUpload = asyncHandler(async (req, res, next) => {
@@ -277,3 +302,6 @@ exports.unblockUser_admin = asyncHandler(async (req, res, next) => {
     .status(200)
     .json({ message: "You Successfully unblock this user", data: user });
 });
+
+// @desc permanantly delete user account
+exports.permanantlydeleteUseraccount = (req, res) => {};
