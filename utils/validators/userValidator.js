@@ -3,6 +3,7 @@ const validatorResult = require("../../middlwares/validatorMiddlwares");
 const User = require("../../model/User");
 const apiError = require("../apiError");
 const isValidObjectId = require("../validMongodbObjectid");
+const bcrypt = require("bcrypt");
 
 exports.createUserValidator = [
   body("firstname")
@@ -124,6 +125,25 @@ exports.deleteUserValidator = [
     }
     return true;
   }),
+
+  validatorResult,
+];
+
+exports.changeUserPasswordValidator = [
+  body("currentPassword")
+    .notEmpty()
+    .withMessage("currentPassword is not allowed to be empty")
+    .custom(async (value, { req }) => {
+      const isValidPassword = await bcrypt.compare(value, req.user.password);
+
+      if (!isValidPassword) {
+        throw new Error("Incorrect current password");
+      }
+      // req.user.password === value
+    }),
+  body("password")
+    .notEmpty()
+    .withMessage("password is not allowed to be empty"),
 
   validatorResult,
 ];

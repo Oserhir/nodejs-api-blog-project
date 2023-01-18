@@ -16,6 +16,7 @@ const {
   unblock,
   block_admin,
   unblockUser_admin,
+  changeUserPassword,
 } = require("./../controllers/userCtr");
 
 const {
@@ -26,6 +27,7 @@ const {
   getAllUserValidator,
   whoViewMyProfileValidator,
   followValidator,
+  changeUserPasswordValidator,
 } = require("../utils/validators/userValidator");
 
 const { requireSignIn, alowedTo } = require("../middlwares/authMiddlwares");
@@ -38,6 +40,16 @@ router.post(
   alowedTo("admin"),
   createUserValidator,
   createUser
+);
+
+// @desc update user password
+// @access Protect
+router.put(
+  "/change-password",
+  requireSignIn,
+  alowedTo("user", "admin"),
+  changeUserPasswordValidator,
+  changeUserPassword
 );
 
 // @desc Update a User

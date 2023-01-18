@@ -1,6 +1,7 @@
 const User = require("../model/User");
 const handlers = require("./handlersFactory");
 const asyncHandler = require("express-async-handler");
+const bcrypt = require("bcrypt");
 
 // Configuration for Multer
 const storage = require("../config/cloudinary");
@@ -15,7 +16,32 @@ exports.uploadProfileImage = upload.single("profile");
 exports.createUser = handlers.createOne(User);
 
 // @Desc Update User
-exports.updateUser = handlers.updateOne(User, "user");
+exports.updateUser = asyncHandler(async (req, res) => {
+  const user = await User.findByIdAndUpdate(
+    req.user._id,
+    {
+      firstname: req.body.firstname,
+      lastname: req.body.firstname,
+      email: req.body.email,
+    },
+    { new: true }
+  );
+
+  res.status(200).json({ data: user });
+});
+
+// @Desc Update Passwoed
+exports.changeUserPassword = asyncHandler(async (req, res) => {
+  const user = await User.findByIdAndUpdate(
+    req.user._id,
+    {
+      password: await bcrypt.hash(req.body.password, 10),
+    },
+    { new: true }
+  );
+
+  res.status(200).json({ data: user });
+});
 
 // @Desc Get All User
 exports.allUsers = handlers.getAll(User);
