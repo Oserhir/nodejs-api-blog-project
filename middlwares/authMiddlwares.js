@@ -75,3 +75,17 @@ exports.alowedTo =
 
 // @desc Make sure the user is logged in the same own url
 exports.isAuth = (req, res, next) => {};
+
+// @desc isBlocked
+exports.isBlocked = (req, res, next) => {
+  if (req.user.isBlocked) {
+    return next(
+      new apiError(
+        "Account blocked..it looks like your account has been blocked",
+        403
+      )
+    );
+  }
+
+  next();
+};

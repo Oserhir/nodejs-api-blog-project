@@ -39,3 +39,4 @@ exports.login = asyncHandler(async (req, res, next) => {
   // 6) Send response to client side
   res.status(200).json({ token, data: user });
 });
+

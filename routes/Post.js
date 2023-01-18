@@ -9,7 +9,11 @@ const {
   deletePost,
 } = require("../controllers/postCtr");
 
-const { requireSignIn, alowedTo } = require("../middlwares/authMiddlwares");
+const {
+  requireSignIn,
+  alowedTo,
+  isBlocked,
+} = require("../middlwares/authMiddlwares");
 
 const {
   createPostValidator,
@@ -24,6 +28,7 @@ router.post(
   "/",
   requireSignIn,
   alowedTo("admin"),
+  isBlocked,
   createPostValidator,
   createPost
 );
