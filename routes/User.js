@@ -148,7 +148,7 @@ router.get(
   unblock
 );
 
-// @desc block
+// @desc block users
 // @access Admin
 router.get(
   "/admin-block/:id",
@@ -158,7 +158,7 @@ router.get(
   block_admin
 );
 
-// @desc unblock
+// @desc unblock users
 // @access Admin
 router.get(
   "/admin-unblock/:id",

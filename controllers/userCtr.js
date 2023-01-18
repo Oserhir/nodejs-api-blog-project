@@ -7,19 +7,20 @@ const handlers = require("./handlersFactory");
 const asyncHandler = require("express-async-handler");
 const bcrypt = require("bcrypt");
 
+// Error
+const apiError = require("../utils/apiError");
+
 // Configuration for Multer
 const storage = require("../config/cloudinary");
 const multer = require("multer");
-const apiError = require("../utils/apiError");
-const e = require("express");
 const upload = multer({ storage: storage });
 
 exports.uploadProfileImage = upload.single("profile");
 
-// @Desc Create a User
+// @desc Create a User
 exports.createUser = handlers.createOne(User);
 
-// @Desc Update User
+// @desc Update a User
 exports.updateUser = asyncHandler(async (req, res) => {
   const user = await User.findByIdAndUpdate(
     req.user._id,
@@ -34,7 +35,7 @@ exports.updateUser = asyncHandler(async (req, res) => {
   res.status(200).json({ data: user });
 });
 
-// @Desc Update Passwoed
+// @desc Update Passwoed
 exports.changeUserPassword = asyncHandler(async (req, res) => {
   const user = await User.findByIdAndUpdate(
     req.user._id,
@@ -47,40 +48,41 @@ exports.changeUserPassword = asyncHandler(async (req, res) => {
   res.status(200).json({ data: user });
 });
 
-// @Desc Get All User
+// desc Get All Users
 exports.allUsers = handlers.getAll(User);
 
-// @Desc Get Single User
+// @desc get a single user
 exports.getUser = handlers.getOne(User, "user");
 
-// @Desc Delete a User
+// @desc delete a user
 exports.deleteUser = handlers.deleteOne(User, "user");
 
-// @Desc Permanantly Delete User Account
+// @desc Permanantly Delete User Account
 exports.deleteAccount = asyncHandler(async (req, res, next) => {
   const userId = req.user._id;
 
-  // Delete User
+  // Find the user to be deleted
   const user = await User.findById(userId);
-  // Delete All the Post
+
+  // find all posts to be deleted
   const posts = await Post.deleteMany({ author: userId });
 
-  // Delete All Comment
+  // Delete all comments of the user
   const comment = await Comment.deleteMany({ user: userId });
 
-  // Delete All Category
+  // Delete all category of the user
   const category = await Category.deleteMany({ user: userId });
 
   user.delete();
 
-  // Send Response to the Client
   res.status(204).send();
 });
 
-// @Desc Uploaded image
+// @desc Uploaded Image
 exports.profilePhotoUpload = asyncHandler(async (req, res, next) => {
   // Find the user to be updated
   let user = await User.findById(req.user._id);
+
   // Check if the user exist
   if (!user) {
     return next(new apiError("User not found!", 404));
@@ -91,7 +93,7 @@ exports.profilePhotoUpload = asyncHandler(async (req, res, next) => {
     return next(new apiError("Access Blocked!", 403));
   }
 
-  // Check is user is updating thier photo
+  // Check is user is updating their photo
   if (req.file) {
     user = await User.findByIdAndUpdate(
       req.user._id,
@@ -101,12 +103,11 @@ exports.profilePhotoUpload = asyncHandler(async (req, res, next) => {
       }
     );
 
-    // update profile photo
     res.status(200).json({ message: "Successfully uploaded", data: user });
   }
 });
 
-// Who View My Profile
+// @desc Who View My Profile
 exports.whoViewMyProfile = asyncHandler(async (req, res, next) => {
   if (req.params.id === req.user._id.toString()) {
     return next(new apiError("Action Denied!", 403));
@@ -125,7 +126,7 @@ exports.whoViewMyProfile = asyncHandler(async (req, res, next) => {
   res.status(200).json({ data: user });
 });
 
-// @Desc following
+// @desc following
 exports.following = asyncHandler(async (req, res, next) => {
   // Find the user to follow
   const B = await User.findById(req.params.id);
@@ -168,7 +169,7 @@ exports.following = asyncHandler(async (req, res, next) => {
   }
 });
 
-// @Desc Unfollowing
+// @desc Unfollowing
 exports.Unfollowing = asyncHandler(async (req, res, next) => {
   const A = await User.findById(req.user._id);
 
@@ -213,6 +214,7 @@ exports.Unfollowing = asyncHandler(async (req, res, next) => {
   }
 });
 
+// @desc block user
 exports.block = asyncHandler(async (req, res, next) => {
   const user = await User.findById(req.user._id);
   const userToBeBlocked = await User.findById(req.params.id);
@@ -244,6 +246,7 @@ exports.block = asyncHandler(async (req, res, next) => {
   }
 });
 
+// @desc unblock user
 exports.unblock = asyncHandler(async (req, res, next) => {
   const user = await User.findById(req.user._id);
   const userToBeunBlock = await User.findById(req.params.id);
@@ -271,6 +274,7 @@ exports.unblock = asyncHandler(async (req, res, next) => {
   }
 });
 
+// @desc  admin can block users
 exports.block_admin = asyncHandler(async (req, res, next) => {
   const user = await User.findByIdAndUpdate(
     req.params.id,
@@ -287,6 +291,7 @@ exports.block_admin = asyncHandler(async (req, res, next) => {
     .json({ message: "You Successfully block this user", data: user });
 });
 
+// @desc  admin can unblock users
 exports.unblockUser_admin = asyncHandler(async (req, res, next) => {
   const user = await User.findByIdAndUpdate(
     req.params.id,
@@ -302,6 +307,3 @@ exports.unblockUser_admin = asyncHandler(async (req, res, next) => {
     .status(200)
     .json({ message: "You Successfully unblock this user", data: user });
 });
-
-// @desc permanantly delete user account
-exports.permanantlydeleteUseraccount = (req, res) => {};

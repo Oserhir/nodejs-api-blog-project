@@ -7,10 +7,10 @@ const {
   loginValidator,
 } = require("./../utils/validators/authValidator");
 
-// @Desc Sign Up
+// @desc Sign Up
 router.post("/signup", signupValidator, signup);
 
-// @Desc Login
+// @desc Login
 router.get("/login", loginValidator, login);
 
 module.exports = router;

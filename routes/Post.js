@@ -22,8 +22,8 @@ const {
   getPostValidator,
 } = require("../utils/validators/postValidator");
 
-// @Desc Create Post
-// @Access Private
+// @desc Create Post
+// @access Private
 router.post(
   "/",
   requireSignIn,

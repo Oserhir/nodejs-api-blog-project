@@ -23,20 +23,19 @@ exports.signup = asyncHandler(async (req, res) => {
 
 // @desc Login
 exports.login = asyncHandler(async (req, res, next) => {
-  // 1) check if password and email in the body (validation)
-  // 2) check if user exist & check if password is correct
+  //  check if password and email in the body (validation)
+  //  check if user exist & check if password is correct
   const user = await User.findOne({ email: req.body.email });
 
   if (!user || !(await bcrypt.compare(req.body.password, user.password))) {
     return next(new apiError("Invalid Password or Email", 401));
   }
-  // 4) Create Token
+  //  Create Token
   const token = createToken(user._id);
 
-  // 5) Delete password from response
+  //  Delete password from response
   delete user._doc.password;
 
-  // 6) Send response to client side
+  //  Send response to client side
   res.status(200).json({ token, data: user });
 });
-
