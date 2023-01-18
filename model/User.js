@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
+const Post = require("./Post");
 
 // Create Schema
 const UserSchema = new mongoose.Schema(
@@ -132,6 +133,23 @@ UserSchema.virtual("viewersCount").get(function () {
 //get blocked count
 UserSchema.virtual("blockedCount").get(function () {
   return this.blocked.length;
+});
+
+// @desc Last Date  User Created a Post
+UserSchema.pre("findOne", async function (next) {
+  // get the user id
+  const userId = this._conditions._id;
+  // find the post created by the user
+  const posts = await Post.find({ author: userId });
+  // get the last post date
+  const lastPostDate = posts[posts.length - 1].createdAt;
+  const lastPostDateStr = lastPostDate.toDateString();
+
+  UserSchema.virtual("lastPostDate").get(function () {
+    return lastPostDateStr;
+  });
+
+  next();
 });
 
 // Hash Password
