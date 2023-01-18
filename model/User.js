@@ -141,45 +141,71 @@ UserSchema.pre("findOne", async function (next) {
   const userId = this._conditions._id;
   // find the post created by the user
   const posts = await Post.find({ author: userId });
-  // get the last post date
-  const lastPostDate = posts[posts.length - 1].createdAt;
-  const lastPostDateStr = lastPostDate.toDateString();
 
-  UserSchema.virtual("lastPostDate").get(function () {
-    return lastPostDateStr;
-  });
+  if (posts.length > 0) {
+    // get the last post date
+    const lastPostDate = posts[posts.length - 1].createdAt;
+    const lastPostDateStr = lastPostDate.toDateString();
 
-  // --------- Check if the user inactive for 30 days ---------- //
+    // --------- Last Post Date ---------- //
 
-  const currentDate = new Date();
-
-  const diff = (currentDate - lastPostDate) / (1000 * 3600 * 24);
-
-  if (diff > 30) {
-    UserSchema.virtual("isInactive").get(function () {
-      return true;
+    UserSchema.virtual("lastPostDate").get(function () {
+      return lastPostDateStr;
     });
-    await User.findByIdAndUpdate(userId, { isBlocked: true }, { new: true });
-  } else {
-    UserSchema.virtual("isInactive").get(function () {
-      return false;
-    });
-    await User.findByIdAndUpdate(userId, { isBlocked: false }, { new: true });
-  }
 
-  // --------- Last Active Date Of A User ---------- //
+    // --------- Check if the user inactive for 30 days ---------- //
 
-  const daysAgo = Math.floor(diff);
-  UserSchema.virtual("lastActive").get(function () {
-    if (daysAgo <= 0) {
-      return "today";
-    } else if (daysAgo === 1) {
-      return "yeterday";
+    const currentDate = new Date();
+
+    const diff = (currentDate - lastPostDate) / (1000 * 3600 * 24);
+
+    if (diff > 30) {
+      UserSchema.virtual("isInactive").get(function () {
+        return true;
+      });
+      await User.findByIdAndUpdate(userId, { isBlocked: true }, { new: true });
     } else {
-      return `${daysAgo} days ago`;
+      UserSchema.virtual("isInactive").get(function () {
+        return false;
+      });
+      await User.findByIdAndUpdate(userId, { isBlocked: false }, { new: true });
     }
-  });
 
+    // --------- Last Active Date Of A User ---------- //
+
+    const daysAgo = Math.floor(diff);
+    UserSchema.virtual("lastActive").get(function () {
+      if (daysAgo <= 0) {
+        return "today";
+      } else if (daysAgo === 1) {
+        return "yeterday";
+      } else {
+        return `${daysAgo} days ago`;
+      }
+    });
+
+    // ---------  Upgrade User Account  ---------- //
+
+    if (posts.length < 10) {
+      await User.findByIdAndUpdate(
+        userId,
+        { userAward: "Bronze" },
+        { new: true }
+      );
+    } else if (posts.length < 20) {
+      await User.findByIdAndUpdate(
+        userId,
+        { userAward: "Silver" },
+        { new: true }
+      );
+    } else {
+      await User.findByIdAndUpdate(
+        userId,
+        { userAward: "Gold" },
+        { new: true }
+      );
+    }
+  }
   next();
 });
 
