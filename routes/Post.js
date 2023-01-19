@@ -43,10 +43,10 @@ router.put(
 );
 
 // @desc get all Post
-router.get("/", allPosts);
+router.get("/", requireSignIn, alowedTo("admin", "user"), allPosts);
 
 // @desc get a single Post
-router.get("/:id", getPostValidator, getPost);
+router.get("/:id",requireSignIn, alowedTo("admin", "user"), getPostValidator, getPost);
 
 // @desc Delete a Post
 router.delete(

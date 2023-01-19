@@ -42,10 +42,32 @@ exports.updatePost = asyncHandler(async (req, res, next) => {
 });
 
 // @desc Get List of Posts
-exports.allPosts = handlers.getAll(Post);
+exports.allPosts = asyncHandler(async (req, res) => {
+  const post = await Post.find().populate("author");
+
+  const posts = post.filter((item) => {
+    return !item.author.blocked.includes(req.user._id);
+  });
+
+  res.status(200).json({ size: posts.length, data: posts });
+});
 
 // @desc Get a single post
-exports.getPost = handlers.getOne(Post, "post");
+exports.getPost = asyncHandler(async (req, res, next) => {
+  const post = await Post.findById(req.params.id).populate("author");
+
+  if (!post) {
+    return next(new apiError(`No post for this id ${req.params.id}`, 404));
+  }
+
+  if (post.author.blocked.includes(req.user._id)) {
+    return next(
+      new apiError(`Sorry, You Are Not Allowed to Access This Post`, 403)
+    );
+  }
+
+  res.send(post);
+});
 
 // @desc Delete Post
 exports.deletePost = asyncHandler(async (req, res, next) => {
