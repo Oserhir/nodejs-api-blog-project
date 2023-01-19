@@ -23,7 +23,7 @@ const {
 } = require("../utils/validators/postValidator");
 
 // @desc Create Post
-// @access Private
+// @access Protect
 router.post(
   "/",
   requireSignIn,
@@ -34,6 +34,7 @@ router.post(
 );
 
 // @desc Update Post
+// @access Protect
 router.put(
   "/:id",
   requireSignIn,
@@ -43,12 +44,21 @@ router.put(
 );
 
 // @desc get all Post
+// @access Protect
 router.get("/", requireSignIn, alowedTo("admin", "user"), allPosts);
 
 // @desc get a single Post
-router.get("/:id",requireSignIn, alowedTo("admin", "user"), getPostValidator, getPost);
+// @access Protect
+router.get(
+  "/:id",
+  requireSignIn,
+  alowedTo("admin", "user"),
+  getPostValidator,
+  getPost
+);
 
 // @desc Delete a Post
+// @access Protect
 router.delete(
   "/:id",
   requireSignIn,

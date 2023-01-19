@@ -43,7 +43,17 @@ router.post(
   createUser
 );
 
-// @desc update user password
+// @desc Update Logged User
+// @access Protect
+router.put(
+  "/",
+  requireSignIn,
+  alowedTo("admin", "user"),
+  updateUserValidator,
+  updateUser
+);
+
+// @desc Change Logged User Password
 // @access Protect
 router.put(
   "/change-password",
@@ -53,17 +63,7 @@ router.put(
   changeUserPassword
 );
 
-// @desc Update a User
-// @access Private/Admin
-router.put(
-  "/:id",
-  requireSignIn,
-  alowedTo("admin"),
-  updateUserValidator,
-  updateUser
-);
-
-// @desc permanantly delete an account
+// @desc Permanantly Delete An Account
 // @access Protect
 router.delete(
   "/delete-account",
@@ -82,10 +82,10 @@ router.delete(
   deleteUser
 );
 
-// @desc get all User
+// @desc Get All Users
 router.get("/", allUsers);
 
-// @desc get a single User
+// @desc Get a Single User
 router.get("/:id", getUserValidator, getUser);
 
 // @desc Uploaded profile image
@@ -93,7 +93,7 @@ router.get("/:id", getUserValidator, getUser);
 router.post(
   "/profile-photo-upload",
   requireSignIn,
-  alowedTo("user"),
+  alowedTo("user", "admin"),
   uploadProfileImage,
   profilePhotoUpload
 );
@@ -108,7 +108,7 @@ router.get(
   whoViewMyProfile
 );
 
-// @desc Follow
+// @desc Follow User
 // @access Protect
 router.get(
   "/following/:id",
@@ -118,7 +118,7 @@ router.get(
   following
 );
 
-// @desc unfollow
+// @desc Unfollow User
 // @access Protect
 router.get(
   "/unfollow/:id",
@@ -128,7 +128,7 @@ router.get(
   Unfollowing
 );
 
-// @desc Block
+// @desc Block User
 // @access Protect
 router.get(
   "/block/:id",
@@ -138,7 +138,7 @@ router.get(
   block
 );
 
-// @desc unblocking
+// @desc unblock User
 // @access Protect
 router.get(
   "/unblock/:id",
@@ -148,7 +148,7 @@ router.get(
   unblock
 );
 
-// @desc block users
+// @desc admin block users
 // @access Admin
 router.get(
   "/admin-block/:id",
@@ -158,7 +158,7 @@ router.get(
   block_admin
 );
 
-// @desc unblock users
+// @desc admin unblock users
 // @access Admin
 router.get(
   "/admin-unblock/:id",

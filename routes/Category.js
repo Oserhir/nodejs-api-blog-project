@@ -36,7 +36,7 @@ router.put(
   updateCategory
 );
 
-// @desc get all Category
+// @desc get all Categories
 router.get("/", allCategories);
 
 // @desc get a single Category

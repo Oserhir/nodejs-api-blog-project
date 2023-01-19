@@ -13,6 +13,7 @@ const apiError = require("../utils/apiError");
 // Configuration for Multer
 const storage = require("../config/cloudinary");
 const multer = require("multer");
+const { selectFields } = require("express-validator/src/select-fields");
 const upload = multer({ storage: storage });
 
 exports.uploadProfileImage = upload.single("profile");
@@ -121,9 +122,9 @@ exports.whoViewMyProfile = asyncHandler(async (req, res, next) => {
     req.user._id,
     { $addToSet: { viewers: req.params.id } },
     { new: true }
-  );
+  ).populate({ path: "viewers" });
 
-  res.status(200).json({ data: user });
+  res.status(200).json({ data: user.viewers });
 });
 
 // @desc following
