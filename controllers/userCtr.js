@@ -49,7 +49,7 @@ exports.changeUserPassword = asyncHandler(async (req, res) => {
   res.status(200).json({ data: user });
 });
 
-// desc Get All Users
+// @desc Get All Users
 exports.allUsers = handlers.getAll(User);
 
 // @desc get a single user
@@ -275,7 +275,7 @@ exports.unblock = asyncHandler(async (req, res, next) => {
   }
 });
 
-// @desc  admin can block users
+// @desc  admin block users
 exports.block_admin = asyncHandler(async (req, res, next) => {
   const user = await User.findByIdAndUpdate(
     req.params.id,
@@ -292,7 +292,7 @@ exports.block_admin = asyncHandler(async (req, res, next) => {
     .json({ message: "You Successfully block this user", data: user });
 });
 
-// @desc  admin can unblock users
+// @desc  admin unblock users
 exports.unblockUser_admin = asyncHandler(async (req, res, next) => {
   const user = await User.findByIdAndUpdate(
     req.params.id,
