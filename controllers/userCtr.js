@@ -134,6 +134,10 @@ exports.following = asyncHandler(async (req, res, next) => {
   // Find the user who is following
   const A = await User.findById(req.user._id);
 
+  if (req.user._id.toString() === req.params.id.toString()) {
+    return next(new apiError("Access Denied!", 403));
+  }
+
   // Check if user and userWhoFollowed are found
   if (A && B) {
     // Check if userWhofollowed is already in the user's followers array
