@@ -26,6 +26,9 @@ Build a Blog API that can be used to manage posts and comments as well as go thr
 - ✅ Admin can unblock a blocked user
 - ✅ A user can close his/her account
 
+</br>
+</br>
+
 ![blogAPI](https://user-images.githubusercontent.com/82850895/215177113-97ec1687-c513-4b87-af33-bf98a25ae2a1.png)
 
 # ENDPOINTS
